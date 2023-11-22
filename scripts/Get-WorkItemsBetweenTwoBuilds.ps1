@@ -1,3 +1,31 @@
+<#
+.SYNOPSIS
+  Returns all linked work items between two builds
+.DESCRIPTION
+  An Azure DevOps automation script that returns all linked work items between two builds
+.PARAMETER PersonalAccessToken
+  Azure DevOps access token with the following scopes: Build (Read), Work Items (Read)
+.PARAMETER OrganizationName
+  Name of the Azure DevOps organization
+.PARAMETER ProjectName
+  Name of the Azure DevOps project
+.PARAMETER FromBuildId
+  Id of the build to start searching
+.PARAMETER ToBuildId
+  Id of the build to stop searching
+.INPUTS
+  None  
+.OUTPUTS
+  The linked work items between the two builds - printed to the console
+.NOTES
+  Version:        1.0
+  Author:         Marc Rufer
+  Creation Date:  21.11.2023
+  Purpose/Change: Initial script development
+  
+.EXAMPLE
+  <Example goes here. Repeat this attribute for more than one example>
+#>
 PARAM
 (
 	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps access token with scopes: Build (Read), Work Items (Read).")]
