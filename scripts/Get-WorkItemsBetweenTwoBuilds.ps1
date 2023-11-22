@@ -24,7 +24,8 @@ $response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' =
 ForEach ($wi in $response.value) {
     $uri = "https://dev.azure.com/{0}/{1}/_apis/wit/workItems/{2}?api-version=7.1-preview.3" -f $OrganizationName, $ProjectName, $wi.id
     $workItem = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
- 
+
+    Write-Host "--------------------"
     Write-Host $workItem.fields.'System.WorkItemType'
     Write-Host $workItem.fields.'System.Title'
     Write-Host $workItem.url
