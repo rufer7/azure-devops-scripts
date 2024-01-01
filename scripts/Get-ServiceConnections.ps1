@@ -33,19 +33,18 @@ $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBy
 
 $uri = "https://dev.azure.com/{0}/_apis/projects?api-version=7.2-preview.4" -f $OrganizationName
 $response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
-
 $projects = $response.value
 
-$serviceConnections = @{}
+$serviceConnections = [System.Collections.ArrayList]::new()
 
 foreach ($project in $projects) {
 	$uri = "https://dev.azure.com/{0}/{1}/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4" -f $Organizationname, $project.name
 	$response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
 
-	$serviceEndpoints = $resonse.value
+	$serviceEndpoints = $response.value
 	foreach ($serviceEndpoint in $serviceEndpoints) {
  		$serviceConnections.Add($serviceEndpoint)
 	}
 }
 
-# TODO - show name type authorization.scheme data.environment data.scopeLevel data.subscriptionId data.subscriptionName 
+$serviceConnections | Format-Table -Property name, type, authorization, data
