@@ -33,3 +33,5 @@ $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBy
 
 # TODO - list projects
 # TODO - for each project -> Get Service Endpoints
+
+# TODO - show name type authorization.scheme data.environment data.scopeLevel data.subscriptionId data.subscriptionName 
