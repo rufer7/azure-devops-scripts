@@ -31,7 +31,21 @@ PARAM
 
 $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("`:$PersonalAccessToken"))
 
-# TODO - list projects
-# TODO - for each project -> Get Service Endpoints
+$uri = "https://dev.azure.com/{0}/_apis/projects?api-version=7.2-preview.4" -f $OrganizationName
+$response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
+
+$projects = $response.value
+
+$serviceConnections = @{}
+
+foreach ($project in $projects) {
+	$uri = "https://dev.azure.com/{0}/{1}/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4" -f $Organizationname, $project.name
+	$response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
+
+	$serviceEndpoints = $resonse.value
+	foreach ($serviceEndpoint in $serviceEndpoints) {
+ 		$serviceConnections.Add($serviceEndpoint)
+	}
+}
 
 # TODO - show name type authorization.scheme data.environment data.scopeLevel data.subscriptionId data.subscriptionName 
