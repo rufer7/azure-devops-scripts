@@ -18,9 +18,12 @@
   Author:         Marc Rufer
   Creation Date:  01.01.2024
   Purpose/Change: Initial script development
-  
 .EXAMPLE
-  <Example goes here. Repeat this attribute for more than one example>
+  Retrieve service connections without printing to console
+  .\Get-ServiceConnections.ps1 -PersonalAccessToken "your_personal_access_token" -OrganizationName "your_organization_name"
+.EXAMPLE
+  Retrieve service connections and print to console
+  .\Get-ServiceConnections.ps1 -PersonalAccessToken "your_personal_access_token" -OrganizationName "your_organization_name" -PrintToConsole
 #>
 PARAM
 (
