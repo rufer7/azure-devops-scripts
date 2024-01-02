@@ -4,7 +4,7 @@
 .DESCRIPTION
   An Azure DevOps automation script that returns all linked work items between two builds
 .PARAMETER PersonalAccessToken
-  Azure DevOps access token with the following scopes: Build (Read), Work Items (Read)
+  Azure DevOps personal access token (PAT) with the following scopes: Build (Read), Work Items (Read)
 .PARAMETER OrganizationName
   Name of the Azure DevOps organization
 .PARAMETER ProjectName
@@ -28,7 +28,7 @@
 #>
 PARAM
 (
-	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps access token with scopes: Build (Read), Work Items (Read).")]
+	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps personal access token (PAT) with scopes: Build (Read), Work Items (Read).")]
  	[string] $PersonalAccessToken
 	,
 	[Parameter(Mandatory = $true, Position = 1)]
