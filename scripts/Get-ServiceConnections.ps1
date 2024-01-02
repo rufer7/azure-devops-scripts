@@ -53,7 +53,12 @@ foreach ($project in $projects) {
 }
 
 if ($PrintToConsole) {
-  $serviceConnections | Format-Table -Wrap -Property name, type, authorization, data
+  Write-Host "Azure DevOps organization: $OrganizationName" -ForegroundColor Green
+  Write-Host ("Projects count:            {0}" -f $projects.Count) -ForegroundColor Green
+  Write-Host ("Service connection count:  {0}" -f $serviceConnections.Count) -ForegroundColor Green
+  Write-Host ""
+
+  $serviceConnections | Format-Table -AutoSize -Wrap -GroupBy isOutdated -Property name, type, @{Name="environment"; Expression={$_.data.environment}}, @{Name="scopeLevel"; Expression={$_.data.scopeLevel}}, @{Name="subscriptionName"; Expression={$_.data.subscriptionName}}, @{Name="authScheme"; Expression={$_.authorization.scheme}}, isShared, isReady
 }
 
 return $serviceConnections
