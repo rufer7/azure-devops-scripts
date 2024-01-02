@@ -34,7 +34,7 @@ PARAM
 	[string] $OrganizationName
   ,
   [Parameter(Mandatory = $false, Position = 2)]
-  [bool] $PrintToConsole = $false
+  [switch] $PrintToConsole = $false
 )
 
 $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("`:$PersonalAccessToken"))
