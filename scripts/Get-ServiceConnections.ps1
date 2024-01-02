@@ -43,8 +43,8 @@ foreach ($project in $projects) {
 
 	$serviceEndpoints = $response.value
 	foreach ($serviceEndpoint in $serviceEndpoints) {
- 		$serviceConnections.Add($serviceEndpoint)
+ 		$null = $serviceConnections.Add($serviceEndpoint)
 	}
 }
 
-$serviceConnections | Format-Table -Property name, type, authorization, data
+$serviceConnections | Format-Table -Wrap -Property name, type, authorization, data
