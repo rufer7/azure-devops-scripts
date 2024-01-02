@@ -7,6 +7,8 @@
   Azure DevOps access token with the following scopes: User Profile (Read), Project and Team (Read), Service Connections (Read & query)
 .PARAMETER OrganizationName
   Name of the Azure DevOps organization
+.PARAMETER PrintOutput
+  If set to true, the output will be printed to the console
 .INPUTS
   None
 .OUTPUTS
@@ -27,6 +29,9 @@ PARAM
 	,
 	[Parameter(Mandatory = $true, Position = 1)]
 	[string] $OrganizationName
+  ,
+  [Parameter(Mandatory = $false, Position = 2)]
+  [bool] $PrintOutput = $false
 )
 
 $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("`:$PersonalAccessToken"))
@@ -47,4 +52,8 @@ foreach ($project in $projects) {
 	}
 }
 
-$serviceConnections | Format-Table -Wrap -Property name, type, authorization, data
+if ($PrintOutput) {
+  $serviceConnections | Format-Table -Wrap -Property name, type, authorization, data
+}
+
+return $serviceConnections
