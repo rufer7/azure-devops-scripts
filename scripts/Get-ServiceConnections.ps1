@@ -4,7 +4,7 @@
 .DESCRIPTION
   An Azure DevOps automation script that returns all service connections / service endpoints of an Azure DevOps organization
 .PARAMETER PersonalAccessToken
-  Azure DevOps access token with the following scopes: User Profile (Read), Project and Team (Read), Service Connections (Read & query)
+  Azure DevOps personal access token (PAT) with the following scopes: User Profile (Read), Project and Team (Read), Service Connections (Read & query)
 .PARAMETER OrganizationName
   Name of the Azure DevOps organization
 .PARAMETER PrintOutput
@@ -24,7 +24,7 @@
 #>
 PARAM
 (
-	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps access token with scopes: User Profile (Read), Project and Team (Read), Service Connections (Read & query).")]
+	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps personal access token (PAT) with scopes: User Profile (Read), Project and Team (Read), Service Connections (Read & query).")]
  	[string] $PersonalAccessToken
 	,
 	[Parameter(Mandatory = $true, Position = 1)]
