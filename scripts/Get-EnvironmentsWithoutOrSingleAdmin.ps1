@@ -43,19 +43,32 @@ foreach ($project in $projects) {
 	$uri = "https://dev.azure.com/{0}/{1}/_apis/pipelines/environments?api-version=7.2-preview.1" -f $Organizationname, $project.name
 	$response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
 
-	$result = $response.value
-	foreach ($item in $result) {
- 		$null = $environments.Add($item)
+	$envs = $response.value
+	foreach ($env in $envs) {
+    $uri = "https://dev.azure.com/{0}/_apis/securityroles/scopes/distributedtask.environmentreferencerole/roleassignments/resources/{1}_{2}?api-version=7.1-preview.1" -f $Organizationname, $project.id, $env.id
+    $response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
+
+    $assignmentsToAdministratorRole = $response.value | ? { $_.role.identifier -eq "distributedtask.environmentreferencerole.Administrator" }
+
+    # add to result list, if no administrator role assignment exists
+    if ($assignmentsToAdministratorRole.Count -eq 0) {
+      $null = $environments.Add($env)
+    # add to result list, if only a single user is assigned to the administrator role
+    } elseif ($assignmentsToAdministratorRole -ne $null -and $assignmentsToAdministratorRole.Count -eq $null -and $assignmentsToAdministratorRole.identity.displayName -notcontains "\") {
+      $null = $environments.Add($env)
+    } else {
+      Write-Host "Environment '$($env.name)' ($($env.id)) has more than one user assigned to the administrator role" -ForegroundColor Yellow
+    }
 	}
 }
 
 if ($PrintToConsole) {
-  Write-Host "Azure DevOps organization: $OrganizationName" -ForegroundColor Green
-  Write-Host ("Projects count:            {0}" -f $projects.Count) -ForegroundColor Green
-  Write-Host ("Environments count      :  {0}" -f $environments.Count) -ForegroundColor Green
+  Write-Host "Azure DevOps organization:                        $OrganizationName" -ForegroundColor Green
+  Write-Host ("Projects count:                                   {0}" -f $projects.Count) -ForegroundColor Green
+  Write-Host ("Environments without or with single admin:        {0}" -f $envs.Count) -ForegroundColor Green
   Write-Host ""
 
-  $environments | Format-Table -AutoSize -Wrap -GroupBy isOutdated -Property name, type, @{Name="environment"; Expression={$_.data.environment}}, @{Name="scopeLevel"; Expression={$_.data.scopeLevel}}, @{Name="subscriptionName"; Expression={$_.data.subscriptionName}}, @{Name="authScheme"; Expression={$_.authorization.scheme}}, isShared, isReady
+  $environments | Format-Table -AutoSize -Wrap -Property id, name, @{Name="projectId"; Expression={$_.project.id}}, @{Name="projectName"; Expression={($projects |? id -eq $_.project.id).name}}
 }
 
 return $environments
