@@ -1,55 +1,64 @@
 <#
 .SYNOPSIS
-  Returns all linked work items between two builds
+Returns all linked work items between two builds
+
 .DESCRIPTION
-  An Azure DevOps automation script that returns all linked work items between two builds
+An Azure DevOps automation script that returns all linked work items between two builds
+
 .PARAMETER PersonalAccessToken
-  Azure DevOps personal access token (PAT) with the following scopes: Build (Read), Work Items (Read)
+Azure DevOps personal access token (PAT) with the following scopes: Build (Read), Work Items (Read)
+
 .PARAMETER OrganizationName
-  Name of the Azure DevOps organization
+Name of the Azure DevOps organization
+
 .PARAMETER ProjectName
-  Name of the Azure DevOps project
+Name of the Azure DevOps project
+
 .PARAMETER FromBuildId
-  Id of the build to start searching
+Id of the build to start searching
+
 .PARAMETER ToBuildId
-  Id of the build to stop searching
+Id of the build to stop searching
+
 .INPUTS
-  None  
+None
+
 .OUTPUTS
-  The linked work items between the two builds - printed to the console
+The linked work items between the two builds - printed to the console
+
 .NOTES
-  Version:        1.0
-  Author:         Marc Rufer
-  Creation Date:  21.11.2023
-  Purpose/Change: Initial script development
-  
+Version:        1.0
+Author:         Marc Rufer
+Creation Date:  21.11.2023
+Purpose/Change: Initial script development
+
 .EXAMPLE
-  <Example goes here. Repeat this attribute for more than one example>
+PS> .\Get-WorkItemsBetweenTwoBuilds.ps1 -PersonalAccessToken "PAT_HERE" -OrganizationName "ORGANIZATION_NAME_HERE" -ProjectName "PROJECT_NAME_HERE" -FromBuildId "START_BUILD_ID_HERE" -ToBuildId "END_BUILD_ID_HERE"
 #>
 PARAM
 (
-	[Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps personal access token (PAT) with scopes: Build (Read), Work Items (Read).")]
- 	[string] $PersonalAccessToken
-	,
-	[Parameter(Mandatory = $true, Position = 1)]
-	[string] $OrganizationName
- 	,
-	[Parameter(Mandatory = $true, Position = 2)]
-	[string] $ProjectName
-	,
-	[Parameter(Mandatory = $true, Position = 3)]
-	[string] $FromBuildId
-	,
-	[Parameter(Mandatory = $true, Position = 4)]
-	[string] $ToBuildId
+    [Parameter(Mandatory = $true, Position = 0, HelpMessage="Azure DevOps personal access token (PAT) with scopes: Build (Read), Work Items (Read).")]
+    [string] $PersonalAccessToken
+    ,
+    [Parameter(Mandatory = $true, Position = 1)]
+    [string] $OrganizationName
+    ,
+    [Parameter(Mandatory = $true, Position = 2)]
+    [string] $ProjectName
+    ,
+    [Parameter(Mandatory = $true, Position = 3)]
+    [string] $FromBuildId
+    ,
+    [Parameter(Mandatory = $true, Position = 4)]
+    [string] $ToBuildId
 )
 
 $base64encodedPAT = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("`:$PersonalAccessToken"))
 
 $uri = "https://dev.azure.com/{0}/{1}/_apis/build/workitems?fromBuildId={2}&toBuildId={3}&api-version=7.0" -f $OrganizationName, $ProjectName, $FromBuildId, $ToBuildId
 $response = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
- 
-ForEach ($wi in $response.value) {
+
+foreach ($wi in $response.value) {
     $uri = "https://dev.azure.com/{0}/{1}/_apis/wit/workItems/{2}?api-version=7.1-preview.3" -f $OrganizationName, $ProjectName, $wi.id
     $workItem = Invoke-RestMethod -Method Get -Uri $uri -Headers @{'Authorization' = "Basic $base64encodedPAT" }
 
