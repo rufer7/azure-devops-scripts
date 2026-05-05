@@ -3,7 +3,7 @@
 .SYNOPSIS
   Deletes Azure DevOps users whose principalName contains OIDCONFLICT_UpnReuse_
 .DESCRIPTION
-  A automation script that queries all Azure DevOps users of the given organization whose principalName contains OIDCONFLICT_UpnReuse_ and deletes them.
+  An automation script that queries all Azure DevOps users of the given organization whose principalName contains OIDCONFLICT_UpnReuse_ and deletes them.
   IMPORTANT: The script requires the Azure CLI to be installed on the executing machine
   IMPORTANT: The executing user needs to be a member of the "Project Collection Administrators" group
   For more information see https://learn.microsoft.com/en-sg/answers/questions/5569893/azure-devops-oid-conflict
@@ -28,7 +28,7 @@ PARAM
   [Parameter(Mandatory = $true, Position = 0, HelpMessage = "Name of the Azure DevOps organization")]
  	[string] $OrganizationName
   ,
-  [PARAMETER(Mandatory = $false, Position = 1, HelpMessage = "Force a dry/test run – no data will be deleted; the affected users will be written to the console
+  [Parameter(Mandatory = $false, Position = 1, HelpMessage = "Force a dry/test run – no data will be deleted; the affected users will be written to the console")]
   [switch] $DryRun = $false
 )
 
