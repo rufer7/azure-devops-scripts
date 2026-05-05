@@ -26,14 +26,21 @@
 PARAM
 (
   [Parameter(Mandatory = $true, Position = 0, HelpMessage = "Name of the Azure DevOps organization")]
- 	[string] $OrganizationName
+  [string] $OrganizationName
   ,
   [Parameter(Mandatory = $false, Position = 1, HelpMessage = "Force a dry/test run – no data will be deleted; the affected users will be written to the console")]
   [switch] $DryRun = $false
 )
 
-az login
+$null = az account show --output none 2>$null
+if ($LASTEXITCODE -ne 0) {
+  throw "Azure CLI is not authenticated. Run 'az login' before executing this script, or use a non-interactive Azure CLI login method in your automation environment."
+}
+
 $accessToken = (az account get-access-token --query accessToken --output tsv)
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($accessToken)) {
+  throw "Failed to acquire an Azure access token from the current Azure CLI session."
+}
 
 Write-Host "Azure DevOps organization: $OrganizationName" -ForegroundColor Yellow
 
@@ -49,7 +56,7 @@ Write-Host ""
 if (!$DryRun) {
   foreach ($user in $oidConflictUsers.value) {
     Write-Host "Delete/remove user $($user.principalName) ..." -ForegroundColor Yellow
-    $azureDevOpsUser = az devops user remove --user $user.principalName
+    $azureDevOpsUser = az devops user remove --org "https://dev.azure.com/$OrganizationName" --user $user.principalName
   }
 }
 
