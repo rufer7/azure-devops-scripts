@@ -56,7 +56,7 @@ Write-Host ""
 if (!$DryRun) {
   foreach ($user in $oidConflictUsers.value) {
     Write-Host "Delete/remove user $($user.principalName) ..." -ForegroundColor Yellow
-    $azureDevOpsUser = az devops user remove --org "https://dev.azure.com/$OrganizationName" --user $user.principalName
+    az devops user remove --org "https://dev.azure.com/$OrganizationName" --user $user.principalName
   }
 }
 
