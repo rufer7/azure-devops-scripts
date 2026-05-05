@@ -62,3 +62,5 @@ if (!$DryRun) {
 
 Write-Host ""
 Write-Host "EXECUTION COMPLETED" -ForegroundColor Green
+
+return $oidConflictUsers.value
